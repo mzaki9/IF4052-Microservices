@@ -18,8 +18,12 @@ export class RestaurantController {
     const limit = Number(c.req.query('limit') || 10)
 
     const result = this.service.getRestaurants({ q, page, limit })
-    
-    return c.json(result)
+    const mapped = {
+      ...result,
+      data: result.data.map((r) => ({ label: r.name, value: r.id })),
+    }
+
+    return c.json(mapped)
   }
 
   /**

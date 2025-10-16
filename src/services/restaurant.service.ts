@@ -1,4 +1,5 @@
 import { Restaurant } from '../models/restaurant.model'
+import { Menu } from '../models/menu.model'
 import { RestaurantRepository } from '../repositories/restaurant.repository'
 
 export type PaginatedResult<T> = {
@@ -53,5 +54,12 @@ export class RestaurantService {
   getRestaurantById(id: string): Restaurant | null {
     const restaurant = this.repository.findById(id)
     return restaurant || null
+  }
+
+  /**
+   * Get menus by restaurant ID
+   */
+  getMenusByRestaurantId(restaurantId: string): Menu[] {
+    return this.repository.findMenusByRestaurantId(restaurantId)
   }
 }

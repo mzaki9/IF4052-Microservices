@@ -39,4 +39,25 @@ export class RestaurantController {
 
     return c.json({ data: restaurant })
   }
+
+  /**
+   * GET /api/restaurants/:id/menus
+   */
+  getMenusByRestaurantId = (c: Context) => {
+    const restaurantId = c.req.param('id')
+    
+    // Check if restaurant exists
+    const restaurant = this.service.getRestaurantById(restaurantId)
+    if (!restaurant) {
+      return c.json({ error: 'Restaurant not found' }, 404)
+    }
+
+    const menus = this.service.getMenusByRestaurantId(restaurantId)
+    const mapped = menus.map((menu) => ({
+      label: menu.name,
+      value: menu.id,
+    }))
+
+    return c.json({ data: mapped })
+  }
 }

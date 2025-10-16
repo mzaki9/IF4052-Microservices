@@ -1,11 +1,11 @@
-import { Context } from 'hono'
-import { RestaurantService } from '../services/restaurant.service'
+import { Context } from "hono";
+import { RestaurantService } from "../services/restaurant.service";
 
 export class RestaurantController {
-  private service: RestaurantService
+  private service: RestaurantService;
 
   constructor() {
-    this.service = new RestaurantService()
+    this.service = new RestaurantService();
   }
 
   /**
@@ -13,51 +13,51 @@ export class RestaurantController {
    * Query params: q (search), page, limit
    */
   getRestaurants = (c: Context) => {
-    const q = c.req.query('q') || ''
-    const page = Number(c.req.query('page') || 1)
-    const limit = Number(c.req.query('limit') || 10)
+    const q = c.req.query("q") || "";
+    const page = Number(c.req.query("page") || 1);
+    const limit = Number(c.req.query("limit") || 10);
 
-    const result = this.service.getRestaurants({ q, page, limit })
+    const result = this.service.getRestaurants({ q, page, limit });
     const mapped = {
       ...result,
       data: result.data.map((r) => ({ label: r.name, value: r.id })),
-    }
+    };
 
-    return c.json(mapped)
-  }
+    return c.json(mapped);
+  };
 
   /**
    * GET /api/restaurants/:id
    */
   getRestaurantById = (c: Context) => {
-    const id = c.req.param('id')
-    const restaurant = this.service.getRestaurantById(id)
+    const id = c.req.param("id");
+    const restaurant = this.service.getRestaurantById(id);
 
     if (!restaurant) {
-      return c.json({ error: 'Restaurant not found' }, 404)
+      return c.json({ error: "Restaurant not found" }, 404);
     }
 
-    return c.json({ data: restaurant })
-  }
+    return c.json({ data: restaurant });
+  };
 
   /**
    * GET /api/restaurants/:id/menus
    */
   getMenusByRestaurantId = (c: Context) => {
-    const restaurantId = c.req.param('id')
-    
+    const restaurantId = c.req.param("id");
+
     // Check if restaurant exists
-    const restaurant = this.service.getRestaurantById(restaurantId)
+    const restaurant = this.service.getRestaurantById(restaurantId);
     if (!restaurant) {
-      return c.json({ error: 'Restaurant not found' }, 404)
+      return c.json({ error: "Restaurant not found" }, 404);
     }
 
-    const menus = this.service.getMenusByRestaurantId(restaurantId)
+    const menus = this.service.getMenusByRestaurantId(restaurantId);
     const mapped = menus.map((menu) => ({
       label: menu.name,
       value: menu.id,
-    }))
+    }));
 
-    return c.json({ data: mapped })
-  }
+    return c.json({ data: mapped });
+  };
 }
